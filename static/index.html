@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document Q&A Chatbot</title>
+<style>
+  body {
+    font-family: -apple-system, sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    background: #f4f4f4;
+    color: #222;
+  }
+  h1 { font-size: 22px; }
+  #upload-section {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  #status { margin-top: 8px; font-size: 14px; color: #555; }
+  #chat-box {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .msg { margin: 10px 0; line-height: 1.5; }
+  .user { text-align: right; }
+  .user .bubble { background: #007bff; color: white; }
+  .bot .bubble { background: #eee; color: #222; }
+  .bubble {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    white-space: pre-wrap;
+  }
+  .sources { font-size: 12px; color: #888; margin-top: 4px; }
+  #input-row { display: flex; margin-top: 12px; gap: 8px; }
+  #query-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+  button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled { background: #aaa; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<h1>📄 Document Q&A</h1>
+
+<div id="upload-section">
+  <input type="file" id="file-input" accept=".pdf,.docx" />
+  <button id="upload-btn">Upload</button>
+  <div id="status">No document uploaded yet.</div>
+</div>
+
+<div id="chat-box"></div>
+
+<div id="input-row">
+  <input type="text" id="query-input" placeholder="Ask a question about the document..." disabled />
+  <button id="send-btn" disabled>Send</button>
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+
+const fileInput = document.getElementById("file-input");
+const uploadBtn = document.getElementById("upload-btn");
+const status = document.getElementById("status");
+const chatBox = document.getElementById("chat-box");
+const queryInput = document.getElementById("query-input");
+const sendBtn = document.getElementById("send-btn");
+
+uploadBtn.onclick = async () => {
+  const file = fileInput.files[0];
+  if (!file) { alert("Choose a file first"); return; }
+
+  status.textContent = "Uploading and processing...";
+  uploadBtn.disabled = true;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch(`${API_BASE}/upload`, { method: "POST", body: formData });
+    const data = await res.json();
+
+    if (!res.ok) {
+      status.textContent = `Error: ${data.detail}`;
+    } else {
+      status.textContent = `Ready: ${data.filename} (${data.num_pages} pages, ${data.num_chunks} chunks)`;
+      queryInput.disabled = false;
+      sendBtn.disabled = false;
+      chatBox.innerHTML = "";
+    }
+  } catch (err) {
+    status.textContent = "Upload failed. Is the backend running?";
+  }
+  uploadBtn.disabled = false;
+};
+
+function addMessage(text, sender, sources) {
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `msg ${sender}`;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+  msgDiv.appendChild(bubble);
+
+  if (sources && sources.length > 0) {
+    const pages = [...new Set(sources.map(s => s.page))].join(", ");
+    const src = document.createElement("div");
+    src.className = "sources";
+    src.textContent = `Sources: page(s) ${pages}`;
+    msgDiv.appendChild(src);
+  }
+
+  chatBox.appendChild(msgDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+async function sendQuery() {
+  const query = queryInput.value.trim();
+  if (!query) return;
+
+  addMessage(query, "user");
+  queryInput.value = "";
+  sendBtn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+    });
+    const data = await res.json();
+    addMessage(data.answer, "bot", data.sources);
+  } catch (err) {
+    addMessage("Something went wrong. Check the backend.", "bot");
+  }
+  sendBtn.disabled = false;
+}
+
+sendBtn.onclick = sendQuery;
+queryInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendQuery();
+});
+</script>
+
+</body>
+</html>
