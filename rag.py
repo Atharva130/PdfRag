@@ -5,17 +5,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = "openai/gpt-oss-20b"
+MODEL = "openai/gpt-oss-120b"
 
 SYSTEM_PROMPT = """You are a helpful assistant that answers questions using ONLY the provided document context.
 
 Rules:
-- Answer strictly based on the given context. Do not use outside knowledge.
-- If the answer isn't in the context, say "I couldn't find this in the document" — do not guess or make things up.
+- Base your answer strictly on facts present in the context. Do not invent facts, numbers, or details not stated in the context.
+- If the context contains no relevant information for the question at all, say "I couldn't find this in the document."
+- If the question asks for a subjective judgment, ranking, or opinion (e.g. "best", "most important") that the document does not explicitly state, do NOT refuse — instead, present the relevant information from the context as-is, and note that the document itself doesn't specify a ranking or judgment.
 - Be concise and direct.
 - When useful, mention which page the information came from.
 """
-
 
 def build_prompt(query: str, retrieved_chunks: list) -> str:
     context_blocks = []
