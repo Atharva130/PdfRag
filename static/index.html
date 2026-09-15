@@ -6,6 +6,8 @@
 
     <title>DocuChat — AI Document Assistant</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -1117,6 +1119,41 @@
 
 
         /* ==========================================
+           MARKDOWN CONTENT (added)
+        ========================================== */
+
+        .bot .bubble table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 8px 0;
+            font-size: 11px;
+        }
+        .bot .bubble th, .bot .bubble td {
+            border: 1px solid #e5e7eb;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        .bot .bubble th {
+            background: #f8fafc;
+        }
+        .bot .bubble ul, .bot .bubble ol {
+            margin: 6px 0 6px 18px;
+        }
+        .bot .bubble p {
+            margin-bottom: 6px;
+        }
+        .bot .bubble p:last-child {
+            margin-bottom: 0;
+        }
+        .bot .bubble code {
+            background: #f1f5f9;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+
+        /* ==========================================
            RESPONSIVE
         ========================================== */
 
@@ -1934,8 +1971,17 @@
         bubble.className =
             "bubble";
 
-        bubble.textContent =
-            text;
+        if (sender === "bot") {
+
+            bubble.innerHTML =
+                marked.parse(text);
+
+        } else {
+
+            bubble.textContent =
+                text;
+
+        }
 
 
         content.appendChild(label);
@@ -1958,18 +2004,18 @@
                 "sources";
 
 
-            const label =
+            const srcLabel =
                 document.createElement("span");
 
-            label.className =
+            srcLabel.className =
                 "sources-label";
 
-            label.textContent =
+            srcLabel.textContent =
                 "Sources:";
 
 
             sourcesContainer.appendChild(
-                label
+                srcLabel
             );
 
 
@@ -2063,8 +2109,8 @@
         bubble.className =
             "bubble";
 
-        bubble.textContent =
-            text;
+        bubble.innerHTML =
+            marked.parse(text);
 
 
         content.appendChild(

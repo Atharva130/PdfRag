@@ -44,7 +44,7 @@ def generate_answer(query: str, retrieved_chunks: list) -> str:
             {"role": "user", "content": prompt},
         ],
         temperature=0,
-        max_tokens=500,
+        max_tokens=1200,
     )
 
     return response.choices[0].message.content #type:ignore
