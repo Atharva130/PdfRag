@@ -8,3 +8,5 @@ groq
 python-dotenv
 langchain-text-splitters
 python-docx
+  --extra-index-url https://download.pytorch.org/whl/cpu
+  torch
