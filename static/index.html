@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>DocuChat — AI Document Assistant</title>
 
+
     <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,95 +23,155 @@
 
         :root {
             --bg: #f5f7fb;
+
             --card: #ffffff;
+
             --navy: #111827;
-            --navy-2: #1e293b;
+            --navy-light: #1e293b;
 
             --purple: #7c3aed;
+            --purple-dark: #5b21b6;
             --purple-light: #ede9fe;
 
             --blue: #2563eb;
             --blue-light: #eff6ff;
 
-            --text: #172033;
-            --muted: #718096;
-
-            --border: #e5e7eb;
-
             --green: #16a34a;
             --green-light: #dcfce7;
 
-            --shadow:
-                0 10px 35px rgba(31, 41, 55, 0.07);
+            --red: #dc2626;
+            --red-light: #fee2e2;
 
-            --gradient:
-                linear-gradient(
-                    135deg,
-                    #4f46e5,
-                    #7c3aed
-                );
+            --text: #172033;
+            --text-secondary: #475569;
+            --muted: #7b8495;
+
+            --border: #e2e8f0;
+
+            --gradient: linear-gradient(
+                135deg,
+                #4f46e5,
+                #7c3aed
+            );
+
+            --shadow: 0 10px 35px rgba(31, 41, 55, 0.07);
         }
 
+
+        html,
         body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+
             font-family:
                 Inter,
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
                 sans-serif;
 
             background:
+
                 radial-gradient(
-                    circle at 15% 15%,
+                    circle at 10% 10%,
                     rgba(124, 58, 237, 0.08),
                     transparent 28%
                 ),
+
                 radial-gradient(
-                    circle at 90% 80%,
+                    circle at 90% 85%,
                     rgba(37, 99, 235, 0.07),
                     transparent 30%
                 ),
+
                 var(--bg);
 
             color: var(--text);
+
             min-height: 100vh;
         }
 
-        /* ==========================================
-           NAVBAR
-        ========================================== */
 
-        .navbar {
-            height: 72px;
+        button,
+        input {
+            font-family: inherit;
+        }
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #111827,
-                    #1e1b4b
-                );
 
-            color: white;
+        /* =========================================================
+           APP
+        ========================================================= */
+
+        .app {
+
+            min-height: 100vh;
 
             display: flex;
+
+            flex-direction: column;
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+
+            height: 72px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             padding: 0 42px;
 
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e1b4b
+                );
+
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+
             box-shadow:
-                0 4px 20px rgba(17, 24, 39, 0.18);
+                0 5px 25px rgba(15,23,42,0.18);
         }
 
+
         .brand {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px;
         }
 
+
         .brand-icon {
+
             width: 40px;
             height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
 
             border-radius: 12px;
 
@@ -114,139 +182,205 @@
                     #3b82f6
                 );
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
             font-size: 19px;
 
             box-shadow:
-                0 5px 18px rgba(124, 58, 237, 0.35);
+                0 5px 20px rgba(124,58,237,0.35);
         }
 
+
         .brand-name {
+
             font-size: 19px;
+
             font-weight: 750;
+
             letter-spacing: -0.4px;
         }
 
+
         .brand-subtitle {
-            font-size: 12px;
+
             color: #a5b4fc;
-            margin-left: 5px;
+
+            font-size: 11px;
+
+            margin-left: 6px;
         }
 
+
         .api-status {
+
             display: flex;
+
             align-items: center;
+
             gap: 8px;
 
             padding: 7px 12px;
 
             border-radius: 20px;
 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.1);
+            background:
+                rgba(255,255,255,0.07);
+
+            border:
+                1px solid rgba(255,255,255,0.1);
 
             color: #d1d5db;
+
             font-size: 11px;
         }
 
+
         .status-dot {
+
             width: 7px;
             height: 7px;
 
-            background: #4ade80;
             border-radius: 50%;
 
+            background: #4ade80;
+
             box-shadow:
-                0 0 8px rgba(74, 222, 128, 0.8);
+                0 0 9px rgba(74,222,128,0.85);
         }
 
 
-        /* ==========================================
-           MAIN LAYOUT
-        ========================================== */
+        /* =========================================================
+           MAIN
+        ========================================================= */
 
         .main {
-            width: min(1250px, calc(100% - 50px));
 
-            margin: 0 auto;
+            width:
+                min(
+                    1250px,
+                    calc(100% - 50px)
+                );
 
-            padding: 30px 0;
+            margin:
+                0 auto;
 
-            display: grid;
+            padding:
+                30px 0;
 
-            grid-template-columns: 320px 1fr;
+            display:
+                grid;
 
-            gap: 24px;
+            grid-template-columns:
+                320px 1fr;
+
+            gap:
+                24px;
+
+            flex: 1;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            CARDS
-        ========================================== */
+        ========================================================= */
 
         .card {
-            background: rgba(255,255,255,0.92);
 
-            border: 1px solid rgba(226,232,240,0.9);
+            background:
+                rgba(255,255,255,0.94);
 
-            border-radius: 18px;
+            border:
+                1px solid rgba(226,232,240,0.95);
 
-            box-shadow: var(--shadow);
+            border-radius:
+                18px;
 
-            backdrop-filter: blur(10px);
+            box-shadow:
+                var(--shadow);
+
+            backdrop-filter:
+                blur(10px);
         }
 
 
-        /* ==========================================
+        /* =========================================================
            SIDEBAR
-        ========================================== */
+        ========================================================= */
 
         .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                18px;
         }
+
+
+        /* =========================================================
+           UPLOAD CARD
+        ========================================================= */
 
         .upload-card {
-            padding: 20px;
+
+            padding:
+                20px;
         }
+
 
         .section-heading {
-            font-size: 15px;
-            font-weight: 750;
 
-            color: #172033;
+            font-size:
+                15px;
+
+            font-weight:
+                750;
+
+            color:
+                var(--text);
         }
+
 
         .section-text {
-            color: var(--muted);
 
-            font-size: 12px;
+            color:
+                var(--muted);
 
-            line-height: 1.6;
+            font-size:
+                12px;
 
-            margin-top: 5px;
-            margin-bottom: 17px;
+            line-height:
+                1.6;
+
+            margin-top:
+                5px;
+
+            margin-bottom:
+                17px;
         }
 
 
-        /* ==========================================
-           DROPZONE
-        ========================================== */
+        /* =========================================================
+           DROP ZONE
+        ========================================================= */
 
         .drop-zone {
-            position: relative;
 
-            border: 1.5px dashed #c4b5fd;
+            position:
+                relative;
 
-            border-radius: 15px;
+            border:
+                1.5px dashed #c4b5fd;
 
-            padding: 27px 15px;
+            border-radius:
+                15px;
 
-            text-align: center;
+            padding:
+                27px 15px;
+
+            text-align:
+                center;
 
             background:
                 linear-gradient(
@@ -255,34 +389,53 @@
                     #f5f7ff
                 );
 
-            cursor: pointer;
+            cursor:
+                pointer;
 
-            transition: all 0.25s ease;
+            transition:
+                all 0.25s ease;
 
-            overflow: hidden;
+            overflow:
+                hidden;
         }
+
 
         .drop-zone::before {
-            content: "";
 
-            position: absolute;
+            content:
+                "";
 
-            width: 100px;
-            height: 100px;
+            position:
+                absolute;
 
-            background: #ddd6fe;
+            width:
+                110px;
 
-            filter: blur(45px);
+            height:
+                110px;
 
-            opacity: 0.35;
+            top:
+                -50px;
 
-            top: -40px;
-            left: -30px;
+            left:
+                -35px;
+
+            background:
+                #ddd6fe;
+
+            filter:
+                blur(45px);
+
+            opacity:
+                0.4;
         }
+
 
         .drop-zone:hover,
         .drop-zone.dragover {
-            border-color: var(--purple);
+
+            border-color:
+                var(--purple);
 
             background:
                 linear-gradient(
@@ -291,19 +444,36 @@
                     #eff6ff
                 );
 
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
 
             box-shadow:
                 0 8px 25px rgba(124,58,237,0.1);
         }
 
+
         .upload-icon {
-            width: 50px;
-            height: 50px;
 
-            margin: 0 auto 13px;
+            width:
+                50px;
 
-            border-radius: 14px;
+            height:
+                50px;
+
+            margin:
+                0 auto 13px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            border-radius:
+                14px;
 
             background:
                 linear-gradient(
@@ -312,223 +482,368 @@
                     #dbeafe
                 );
 
-            color: var(--purple);
+            color:
+                var(--purple);
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size:
+                23px;
 
-            font-size: 23px;
-
-            position: relative;
+            position:
+                relative;
         }
+
 
         .drop-title {
-            font-size: 13px;
-            font-weight: 700;
 
-            position: relative;
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+
+            position:
+                relative;
         }
+
 
         .drop-subtitle {
-            color: #8a94a6;
 
-            font-size: 11px;
+            color:
+                #8a94a6;
 
-            margin-top: 5px;
+            font-size:
+                11px;
 
-            position: relative;
+            margin-top:
+                5px;
+
+            position:
+                relative;
         }
+
 
         .file-input {
-            display: none;
+
+            display:
+                none;
         }
 
 
-        /* ==========================================
-           SELECTED FILE
-        ========================================== */
+        /* =========================================================
+           FILE CARD
+        ========================================================= */
 
         .file-card {
-            display: none;
 
-            align-items: center;
+            display:
+                none;
 
-            gap: 10px;
+            align-items:
+                center;
 
-            margin-top: 13px;
+            gap:
+                10px;
 
-            padding: 11px;
+            margin-top:
+                13px;
 
-            background: #f8fafc;
+            padding:
+                11px;
 
-            border: 1px solid var(--border);
+            background:
+                #f8fafc;
 
-            border-radius: 12px;
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                12px;
         }
+
 
         .file-card.visible {
-            display: flex;
+
+            display:
+                flex;
         }
+
 
         .file-icon {
-            width: 38px;
-            height: 38px;
 
-            flex-shrink: 0;
+            width:
+                38px;
 
-            border-radius: 9px;
+            height:
+                38px;
 
-            background: #fee2e2;
+            flex-shrink:
+                0;
 
-            color: #dc2626;
+            display:
+                flex;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items:
+                center;
 
-            font-size: 17px;
+            justify-content:
+                center;
+
+            border-radius:
+                9px;
+
+            background:
+                var(--red-light);
+
+            color:
+                var(--red);
+
+            font-size:
+                17px;
         }
+
 
         .file-info {
-            flex: 1;
-            min-width: 0;
+
+            flex:
+                1;
+
+            min-width:
+                0;
         }
+
 
         .file-name {
-            font-size: 12px;
-            font-weight: 650;
 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size:
+                12px;
+
+            font-weight:
+                650;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+            white-space:
+                nowrap;
         }
+
 
         .file-type {
-            color: var(--muted);
-            font-size: 10px;
 
-            margin-top: 3px;
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            margin-top:
+                3px;
         }
+
 
         .remove-file {
-            border: none;
-            background: transparent;
 
-            color: #9ca3af;
+            border:
+                none;
 
-            font-size: 18px;
+            background:
+                transparent;
 
-            cursor: pointer;
+            color:
+                #9ca3af;
+
+            font-size:
+                18px;
+
+            cursor:
+                pointer;
+
+            padding:
+                3px;
         }
+
 
         .remove-file:hover {
-            color: #ef4444;
+
+            color:
+                var(--red);
         }
 
 
-        /* ==========================================
+        /* =========================================================
            UPLOAD BUTTON
-        ========================================== */
+        ========================================================= */
 
         .upload-button {
-            width: 100%;
 
-            margin-top: 13px;
+            width:
+                100%;
 
-            padding: 12px;
+            margin-top:
+                13px;
 
-            border: none;
+            padding:
+                12px;
 
-            border-radius: 11px;
+            border:
+                none;
 
-            background: var(--gradient);
+            border-radius:
+                11px;
 
-            color: white;
+            background:
+                var(--gradient);
 
-            font-size: 12px;
-            font-weight: 700;
+            color:
+                white;
 
-            cursor: pointer;
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
 
             box-shadow:
                 0 6px 18px rgba(99,102,241,0.25);
 
-            transition: all 0.2s ease;
+            transition:
+                all 0.2s ease;
         }
+
 
         .upload-button:hover:not(:disabled) {
-            transform: translateY(-1px);
+
+            transform:
+                translateY(-1px);
 
             box-shadow:
-                0 9px 22px rgba(99,102,241,0.3);
+                0 9px 23px rgba(99,102,241,0.3);
         }
+
 
         .upload-button:disabled {
-            background: #d1d5db;
-            box-shadow: none;
-            cursor: not-allowed;
+
+            background:
+                #cbd5e1;
+
+            box-shadow:
+                none;
+
+            cursor:
+                not-allowed;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            DOCUMENT CARD
-        ========================================== */
+        ========================================================= */
 
         .document-card {
-            padding: 19px;
+
+            padding:
+                19px;
         }
+
 
         .document-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
 
-            margin-bottom: 15px;
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom:
+                15px;
         }
+
 
         .badge {
-            display: flex;
-            align-items: center;
-            gap: 5px;
 
-            padding: 5px 9px;
+            display:
+                flex;
 
-            border-radius: 20px;
+            align-items:
+                center;
 
-            background: #f1f5f9;
+            gap:
+                5px;
 
-            color: #64748b;
+            padding:
+                5px 9px;
 
-            font-size: 9px;
-            font-weight: 700;
+            border-radius:
+                20px;
+
+            background:
+                #f1f5f9;
+
+            color:
+                #64748b;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
         }
+
 
         .badge.ready {
-            background: var(--green-light);
-            color: var(--green);
+
+            background:
+                var(--green-light);
+
+            color:
+                var(--green);
         }
+
 
         .document-name {
-            font-size: 13px;
-            font-weight: 700;
 
-            margin-bottom: 14px;
+            font-size:
+                13px;
 
-            word-break: break-word;
+            font-weight:
+                700;
+
+            margin-bottom:
+                14px;
+
+            word-break:
+                break-word;
         }
+
 
         .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
 
-            gap: 9px;
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                9px;
         }
 
-        .stat {
-            padding: 12px;
 
-            border-radius: 11px;
+        .stat {
+
+            padding:
+                12px;
+
+            border-radius:
+                11px;
 
             background:
                 linear-gradient(
@@ -537,45 +852,77 @@
                     #f1f5f9
                 );
 
-            border: 1px solid #edf0f3;
+            border:
+                1px solid #edf0f3;
         }
+
 
         .stat-value {
-            font-size: 17px;
-            font-weight: 750;
+
+            font-size:
+                17px;
+
+            font-weight:
+                750;
         }
+
 
         .stat-label {
-            font-size: 9px;
-            color: var(--muted);
 
-            margin-top: 3px;
+            font-size:
+                9px;
+
+            color:
+                var(--muted);
+
+            margin-top:
+                3px;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            CHAT PANEL
-        ========================================== */
+        ========================================================= */
 
         .chat-panel {
-            height: calc(100vh - 132px);
 
-            min-height: 620px;
+            height:
+                calc(100vh - 132px);
 
-            display: flex;
-            flex-direction: column;
+            min-height:
+                620px;
 
-            overflow: hidden;
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            overflow:
+                hidden;
         }
 
+
+        /* =========================================================
+           CHAT HEADER
+        ========================================================= */
+
         .chat-header {
-            padding: 18px 22px;
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding:
+                18px 22px;
 
-            border-bottom: 1px solid var(--border);
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            border-bottom:
+                1px solid var(--border);
 
             background:
                 linear-gradient(
@@ -585,121 +932,199 @@
                 );
         }
 
+
         .chat-title-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
         }
+
 
         .ai-icon {
-            width: 34px;
-            height: 34px;
 
-            border-radius: 10px;
+            width:
+                34px;
 
-            background: var(--purple-light);
+            height:
+                34px;
 
-            color: var(--purple);
+            display:
+                flex;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+            align-items:
+                center;
 
-        .chat-title {
-            font-size: 14px;
-            font-weight: 750;
-        }
+            justify-content:
+                center;
 
-        .chat-description {
-            color: var(--muted);
-
-            font-size: 10px;
-
-            margin-top: 2px;
-        }
-
-        .clear-chat {
-            padding: 7px 11px;
-
-            border-radius: 8px;
-
-            border: 1px solid var(--border);
-
-            background: white;
-
-            color: #64748b;
-
-            font-size: 10px;
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .clear-chat:hover {
-            background: #f8fafc;
-            color: #334155;
-        }
-
-
-        /* ==========================================
-           CHAT AREA
-        ========================================== */
-
-        .chat-box {
-            flex: 1;
-
-            overflow-y: auto;
-
-            padding: 28px 30px;
+            border-radius:
+                10px;
 
             background:
+                var(--purple-light);
+
+            color:
+                var(--purple);
+        }
+
+
+        .chat-title {
+
+            font-size:
+                14px;
+
+            font-weight:
+                750;
+        }
+
+
+        .chat-description {
+
+            color:
+                var(--muted);
+
+            font-size:
+                10px;
+
+            margin-top:
+                2px;
+        }
+
+
+        .clear-chat {
+
+            padding:
+                7px 11px;
+
+            border-radius:
+                8px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                white;
+
+            color:
+                #64748b;
+
+            font-size:
+                10px;
+
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
+        }
+
+
+        .clear-chat:hover {
+
+            background:
+                #f8fafc;
+
+            color:
+                #334155;
+        }
+
+
+        /* =========================================================
+           CHAT BOX
+        ========================================================= */
+
+        .chat-box {
+
+            flex:
+                1;
+
+            overflow-y:
+                auto;
+
+            padding:
+                28px 30px;
+
+            background:
+
                 radial-gradient(
                     circle at 50% 0%,
                     rgba(124,58,237,0.035),
                     transparent 35%
                 ),
+
                 #fbfcfe;
 
-            scroll-behavior: smooth;
+            scroll-behavior:
+                smooth;
         }
+
 
         .chat-box::-webkit-scrollbar {
-            width: 6px;
+
+            width:
+                6px;
         }
+
 
         .chat-box::-webkit-scrollbar-thumb {
-            background: #d7dce5;
-            border-radius: 10px;
+
+            background:
+                #d7dce5;
+
+            border-radius:
+                10px;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            EMPTY STATE
-        ========================================== */
+        ========================================================= */
 
         .empty-state {
-            height: 100%;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height:
+                100%;
 
-            text-align: center;
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            text-align:
+                center;
         }
+
 
         .empty-content {
-            max-width: 500px;
+
+            max-width:
+                500px;
         }
 
+
         .empty-icon {
-            width: 70px;
-            height: 70px;
 
-            margin: 0 auto 17px;
+            width:
+                70px;
 
-            border-radius: 20px;
+            height:
+                70px;
+
+            margin:
+                0 auto 17px;
+
+            border-radius:
+                20px;
 
             background:
                 linear-gradient(
@@ -708,21 +1133,33 @@
                     #dbeafe
                 );
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display:
+                flex;
 
-            font-size: 29px;
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                29px;
 
             box-shadow:
                 0 10px 30px rgba(99,102,241,0.12);
         }
 
-        .empty-title {
-            font-size: 22px;
-            font-weight: 800;
 
-            letter-spacing: -0.6px;
+        .empty-title {
+
+            font-size:
+                22px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                -0.6px;
 
             background:
                 linear-gradient(
@@ -731,68 +1168,109 @@
                     #5b21b6
                 );
 
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background-clip:
+                text;
+
+            -webkit-background-clip:
+                text;
+
+            -webkit-text-fill-color:
+                transparent;
         }
+
 
         .empty-description {
-            margin-top: 9px;
 
-            color: #7b8495;
+            margin-top:
+                9px;
 
-            font-size: 12px;
+            color:
+                #7b8495;
 
-            line-height: 1.65;
+            font-size:
+                12px;
+
+            line-height:
+                1.65;
         }
+
 
         .suggestions {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
 
-            gap: 8px;
+            display:
+                flex;
 
-            margin-top: 20px;
+            justify-content:
+                center;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                8px;
+
+            margin-top:
+                20px;
         }
+
 
         .suggestion {
-            padding: 8px 12px;
 
-            border-radius: 20px;
+            padding:
+                8px 12px;
 
-            border: 1px solid #ddd6fe;
+            border-radius:
+                20px;
 
-            background: #faf9ff;
+            border:
+                1px solid #ddd6fe;
 
-            color: #6d28d9;
+            background:
+                #faf9ff;
 
-            font-size: 10px;
+            color:
+                #6d28d9;
 
-            cursor: pointer;
+            font-size:
+                10px;
 
-            transition: 0.2s;
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
         }
+
 
         .suggestion:hover {
-            background: #ede9fe;
 
-            transform: translateY(-1px);
+            background:
+                #ede9fe;
+
+            transform:
+                translateY(-1px);
         }
 
 
-        /* ==========================================
+        /* =========================================================
            MESSAGES
-        ========================================== */
+        ========================================================= */
 
         .message {
-            display: flex;
 
-            margin-bottom: 20px;
+            display:
+                flex;
 
-            animation: messageIn 0.25s ease;
+            margin-bottom:
+                20px;
+
+            animation:
+                messageIn 0.25s ease;
         }
 
+
         @keyframes messageIn {
+
             from {
                 opacity: 0;
                 transform: translateY(6px);
@@ -802,48 +1280,74 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
+
 
         .message.user {
-            justify-content: flex-end;
+
+            justify-content:
+                flex-end;
         }
+
 
         .message.bot {
-            justify-content: flex-start;
+
+            justify-content:
+                flex-start;
         }
+
 
         .message-content {
-            max-width: 78%;
+
+            max-width:
+                82%;
         }
+
 
         .message-label {
-            font-size: 9px;
 
-            color: #9aa3b2;
+            font-size:
+                9px;
 
-            margin-bottom: 5px;
+            color:
+                #9aa3b2;
+
+            margin-bottom:
+                5px;
         }
+
 
         .user .message-label {
-            text-align: right;
+
+            text-align:
+                right;
         }
+
 
         .bubble {
-            padding: 12px 15px;
 
-            border-radius: 15px;
+            padding:
+                13px 16px;
 
-            font-size: 12px;
+            border-radius:
+                15px;
 
-            line-height: 1.65;
+            font-size:
+                12px;
 
-            white-space: pre-wrap;
+            line-height:
+                1.7;
 
-            word-break: break-word;
+            word-break:
+                break-word;
         }
 
+
         .user .bubble {
-            color: white;
+
+            color:
+                white;
 
             background:
                 linear-gradient(
@@ -852,194 +1356,670 @@
                     #7c3aed
                 );
 
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius:
+                4px;
 
             box-shadow:
                 0 5px 15px rgba(79,70,229,0.16);
+
+            white-space:
+                pre-wrap;
         }
 
+
         .bot .bubble {
-            background: white;
 
-            border: 1px solid #e5e7eb;
+            background:
+                white;
 
-            color: #293244;
+            border:
+                1px solid #e5e7eb;
 
-            border-bottom-left-radius: 4px;
+            color:
+                #293244;
+
+            border-bottom-left-radius:
+                4px;
 
             box-shadow:
                 0 3px 12px rgba(0,0,0,0.035);
         }
 
 
-        /* ==========================================
-           SOURCES
-        ========================================== */
+        /* =========================================================
+           MARKDOWN RESPONSE
+        ========================================================= */
+
+        .ai-response {
+
+            font-size:
+                13px;
+
+            color:
+                #293244;
+
+            line-height:
+                1.7;
+        }
+
+
+        .ai-response p {
+
+            margin:
+                0 0 12px;
+        }
+
+
+        .ai-response p:last-child {
+
+            margin-bottom:
+                0;
+        }
+
+
+        .ai-response strong {
+
+            color:
+                #111827;
+
+            font-weight:
+                750;
+        }
+
+
+        .ai-response em {
+
+            color:
+                #475569;
+        }
+
+
+        .ai-response h1,
+        .ai-response h2,
+        .ai-response h3 {
+
+            color:
+                #172033;
+
+            line-height:
+                1.35;
+
+            margin-top:
+                18px;
+
+            margin-bottom:
+                9px;
+        }
+
+
+        .ai-response h1:first-child,
+        .ai-response h2:first-child,
+        .ai-response h3:first-child {
+
+            margin-top:
+                0;
+        }
+
+
+        .ai-response h1 {
+
+            font-size:
+                18px;
+        }
+
+
+        .ai-response h2 {
+
+            font-size:
+                16px;
+        }
+
+
+        .ai-response h3 {
+
+            font-size:
+                14px;
+        }
+
+
+        /* =========================================================
+           LISTS
+        ========================================================= */
+
+        .ai-response ul,
+        .ai-response ol {
+
+            margin:
+                7px 0 14px;
+
+            padding-left:
+                23px;
+        }
+
+
+        .ai-response li {
+
+            margin:
+                5px 0;
+
+            padding-left:
+                3px;
+        }
+
+
+        .ai-response li::marker {
+
+            color:
+                var(--purple);
+
+            font-weight:
+                700;
+        }
+
+
+        /* =========================================================
+           INLINE CODE
+        ========================================================= */
+
+        .ai-response code {
+
+            background:
+                #f1f5f9;
+
+            color:
+                #6d28d9;
+
+            border:
+                1px solid #e2e8f0;
+
+            padding:
+                2px 6px;
+
+            border-radius:
+                5px;
+
+            font-family:
+                "SFMono-Regular",
+                Consolas,
+                monospace;
+
+            font-size:
+                11px;
+        }
+
+
+        /* =========================================================
+           CODE BLOCK
+        ========================================================= */
+
+        .ai-response pre {
+
+            background:
+                #111827;
+
+            color:
+                #e5e7eb;
+
+            padding:
+                14px 16px;
+
+            border-radius:
+                10px;
+
+            overflow-x:
+                auto;
+
+            margin:
+                13px 0;
+        }
+
+
+        .ai-response pre code {
+
+            background:
+                transparent;
+
+            border:
+                none;
+
+            color:
+                inherit;
+
+            padding:
+                0;
+
+            font-size:
+                11px;
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .ai-table-wrapper {
+
+            width:
+                100%;
+
+            overflow-x:
+                auto;
+
+            margin:
+                14px 0;
+        }
+
+
+        .ai-response table {
+
+            width:
+                100%;
+
+            min-width:
+                480px;
+
+            border-collapse:
+                separate;
+
+            border-spacing:
+                0;
+
+            font-size:
+                11px;
+
+            border:
+                1px solid #e2e8f0;
+
+            border-radius:
+                10px;
+
+            overflow:
+                hidden;
+
+            background:
+                white;
+        }
+
+
+        .ai-response th {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f3ff,
+                    #eff6ff
+                );
+
+            color:
+                #312e81;
+
+            font-weight:
+                700;
+
+            text-align:
+                left;
+
+            padding:
+                10px;
+
+            border-bottom:
+                1px solid #e2e8f0;
+        }
+
+
+        .ai-response td {
+
+            padding:
+                9px 10px;
+
+            color:
+                #475569;
+
+            border-bottom:
+                1px solid #eef2f7;
+
+            border-right:
+                1px solid #eef2f7;
+
+            vertical-align:
+                top;
+        }
+
+
+        .ai-response tr:last-child td {
+
+            border-bottom:
+                none;
+        }
+
+
+        .ai-response td:last-child,
+        .ai-response th:last-child {
+
+            border-right:
+                none;
+        }
+
+
+        /* =========================================================
+           SOURCE REFERENCES
+        ========================================================= */
+
+        .inline-source {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            background:
+                #eff6ff;
+
+            color:
+                #2563eb;
+
+            border:
+                1px solid #dbeafe;
+
+            padding:
+                2px 6px;
+
+            border-radius:
+                5px;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            white-space:
+                nowrap;
+
+            vertical-align:
+                middle;
+        }
+
 
         .sources {
-            display: flex;
 
-            align-items: center;
+            display:
+                flex;
 
-            flex-wrap: wrap;
+            align-items:
+                center;
 
-            gap: 6px;
+            flex-wrap:
+                wrap;
 
-            margin-top: 7px;
+            gap:
+                6px;
+
+            margin-top:
+                8px;
         }
+
 
         .sources-label {
-            font-size: 9px;
 
-            color: #8b95a5;
+            font-size:
+                9px;
+
+            color:
+                #8b95a5;
         }
+
 
         .source-chip {
-            padding: 4px 7px;
 
-            border-radius: 6px;
+            padding:
+                4px 8px;
 
-            background: #eff6ff;
+            border-radius:
+                6px;
 
-            color: #2563eb;
+            background:
+                #eff6ff;
 
-            font-size: 9px;
+            color:
+                #2563eb;
 
-            font-weight: 650;
+            font-size:
+                9px;
 
-            border: 1px solid #dbeafe;
+            font-weight:
+                650;
+
+            border:
+                1px solid #dbeafe;
         }
 
 
-        /* ==========================================
+        /* =========================================================
+           HORIZONTAL RULE
+        ========================================================= */
+
+        .ai-response hr {
+
+            border:
+                none;
+
+            border-top:
+                1px solid #e5e7eb;
+
+            margin:
+                16px 0;
+        }
+
+
+        /* =========================================================
            TYPING
-        ========================================== */
+        ========================================================= */
 
         .typing {
-            display: none;
+
+            display:
+                none;
         }
+
 
         .typing.visible {
-            display: flex;
+
+            display:
+                flex;
         }
+
 
         .typing-bubble {
-            display: flex;
 
-            gap: 4px;
+            display:
+                flex;
 
-            padding: 13px 15px;
+            gap:
+                4px;
 
-            border-radius: 14px;
+            padding:
+                13px 15px;
 
-            border-bottom-left-radius: 4px;
+            border-radius:
+                14px;
 
-            background: white;
+            border-bottom-left-radius:
+                4px;
 
-            border: 1px solid var(--border);
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
         }
+
 
         .typing-dot {
-            width: 5px;
-            height: 5px;
 
-            border-radius: 50%;
+            width:
+                5px;
 
-            background: #8b5cf6;
+            height:
+                5px;
 
-            animation: typing 1.2s infinite;
+            border-radius:
+                50%;
+
+            background:
+                #8b5cf6;
+
+            animation:
+                typing 1.2s infinite;
         }
+
 
         .typing-dot:nth-child(2) {
-            animation-delay: .15s;
+
+            animation-delay:
+                .15s;
         }
+
 
         .typing-dot:nth-child(3) {
-            animation-delay: .3s;
+
+            animation-delay:
+                .3s;
         }
 
+
         @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: .4;
+
+            0%,
+            60%,
+            100% {
+
+                transform:
+                    translateY(0);
+
+                opacity:
+                    .4;
             }
 
             30% {
-                transform: translateY(-4px);
-                opacity: 1;
+
+                transform:
+                    translateY(-4px);
+
+                opacity:
+                    1;
             }
+
         }
 
 
-        /* ==========================================
+        /* =========================================================
            INPUT
-        ========================================== */
+        ========================================================= */
 
         .input-area {
-            padding: 15px 20px 17px;
 
-            background: white;
+            padding:
+                15px 20px 17px;
 
-            border-top: 1px solid var(--border);
+            background:
+                white;
+
+            border-top:
+                1px solid var(--border);
         }
+
 
         .input-wrapper {
-            display: flex;
 
-            align-items: center;
+            display:
+                flex;
 
-            gap: 8px;
+            align-items:
+                center;
 
-            padding: 5px 5px 5px 14px;
+            gap:
+                8px;
 
-            border: 1px solid #d9dee7;
+            padding:
+                5px 5px 5px 14px;
 
-            border-radius: 13px;
+            border:
+                1px solid #d9dee7;
 
-            background: #fbfcff;
+            border-radius:
+                13px;
 
-            transition: .2s;
+            background:
+                #fbfcff;
+
+            transition:
+                .2s;
         }
 
-        .input-wrapper:focus-within {
-            border-color: #a78bfa;
 
-            background: white;
+        .input-wrapper:focus-within {
+
+            border-color:
+                #a78bfa;
+
+            background:
+                white;
 
             box-shadow:
                 0 0 0 3px rgba(124,58,237,0.08);
         }
 
+
         .query-input {
-            flex: 1;
 
-            border: none;
-            outline: none;
+            flex:
+                1;
 
-            background: transparent;
+            border:
+                none;
 
-            font-family: inherit;
+            outline:
+                none;
 
-            font-size: 12px;
+            background:
+                transparent;
 
-            color: var(--text);
+            font-size:
+                12px;
 
-            min-width: 0;
+            color:
+                var(--text);
+
+            min-width:
+                0;
         }
+
 
         .query-input::placeholder {
-            color: #a0a8b6;
+
+            color:
+                #a0a8b6;
         }
 
+
         .send-button {
-            width: 36px;
-            height: 36px;
 
-            flex-shrink: 0;
+            width:
+                36px;
 
-            border: none;
+            height:
+                36px;
 
-            border-radius: 10px;
+            flex-shrink:
+                0;
+
+            border:
+                none;
+
+            border-radius:
+                10px;
 
             background:
                 linear-gradient(
@@ -1048,141 +2028,219 @@
                     #7c3aed
                 );
 
-            color: white;
+            color:
+                white;
 
-            cursor: pointer;
+            cursor:
+                pointer;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display:
+                flex;
 
-            font-size: 16px;
+            align-items:
+                center;
 
-            transition: .2s;
+            justify-content:
+                center;
+
+            font-size:
+                16px;
+
+            transition:
+                .2s;
 
             box-shadow:
                 0 4px 12px rgba(99,102,241,0.2);
         }
 
+
         .send-button:hover:not(:disabled) {
-            transform: translateY(-1px);
+
+            transform:
+                translateY(-1px);
 
             box-shadow:
                 0 6px 16px rgba(99,102,241,0.28);
         }
 
+
         .send-button:disabled {
-            background: #d1d5db;
 
-            box-shadow: none;
+            background:
+                #d1d5db;
 
-            cursor: not-allowed;
+            box-shadow:
+                none;
+
+            cursor:
+                not-allowed;
         }
+
 
         .input-hint {
-            text-align: center;
 
-            margin-top: 7px;
+            text-align:
+                center;
 
-            color: #a1a8b5;
+            margin-top:
+                7px;
 
-            font-size: 9px;
+            color:
+                #a1a8b5;
+
+            font-size:
+                9px;
         }
 
 
-        /* ==========================================
+        /* =========================================================
            SPINNER
-        ========================================== */
+        ========================================================= */
 
         .spinner {
-            width: 13px;
-            height: 13px;
 
-            border: 2px solid rgba(255,255,255,.35);
+            width:
+                13px;
 
-            border-top-color: white;
+            height:
+                13px;
 
-            border-radius: 50%;
+            border:
+                2px solid rgba(255,255,255,.35);
 
-            animation: spin .7s linear infinite;
+            border-top-color:
+                white;
 
-            display: inline-block;
+            border-radius:
+                50%;
+
+            animation:
+                spin .7s linear infinite;
+
+            display:
+                inline-block;
         }
+
 
         @keyframes spin {
+
             to {
-                transform: rotate(360deg);
+                transform:
+                    rotate(360deg);
             }
+
         }
 
 
-        /* ==========================================
+        /* =========================================================
            RESPONSIVE
-        ========================================== */
+        ========================================================= */
 
         @media (max-width: 900px) {
 
             .main {
-                grid-template-columns: 1fr;
+
+                grid-template-columns:
+                    1fr;
             }
+
 
             .sidebar {
-                display: grid;
 
-                grid-template-columns: 1fr 1fr;
+                display:
+                    grid;
+
+                grid-template-columns:
+                    1fr 1fr;
             }
+
 
             .chat-panel {
-                height: 650px;
+
+                height:
+                    650px;
             }
+
         }
+
 
         @media (max-width: 620px) {
 
             .navbar {
-                padding: 0 17px;
+
+                padding:
+                    0 17px;
             }
+
 
             .brand-subtitle,
             .api-status {
-                display: none;
+
+                display:
+                    none;
             }
+
 
             .main {
-                width: calc(100% - 20px);
 
-                padding: 15px 0;
+                width:
+                    calc(100% - 20px);
+
+                padding:
+                    15px 0;
             }
+
 
             .sidebar {
-                grid-template-columns: 1fr;
+
+                grid-template-columns:
+                    1fr;
             }
+
 
             .chat-box {
-                padding: 20px 14px;
+
+                padding:
+                    20px 14px;
             }
+
 
             .chat-panel {
-                min-height: 600px;
+
+                min-height:
+                    600px;
             }
+
 
             .message-content {
-                max-width: 90%;
+
+                max-width:
+                    92%;
             }
 
+
             .empty-title {
-                font-size: 19px;
+
+                font-size:
+                    19px;
             }
+
         }
+
     </style>
+
 </head>
 
 
 <body>
 
+
 <div class="app">
 
-    <!-- ================= NAVBAR ================= -->
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
 
     <header class="navbar">
 
@@ -1193,6 +2251,7 @@
             </div>
 
             <div>
+
                 <span class="brand-name">
                     DocuChat
                 </span>
@@ -1200,6 +2259,7 @@
                 <span class="brand-subtitle">
                     AI Document Assistant
                 </span>
+
             </div>
 
         </div>
@@ -1216,17 +2276,21 @@
     </header>
 
 
-    <!-- ================= MAIN ================= -->
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
     <main class="main">
 
 
-        <!-- ================= SIDEBAR ================= -->
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
 
         <aside class="sidebar">
 
 
-            <!-- UPLOAD -->
+            <!-- UPLOAD CARD -->
 
             <section class="card upload-card">
 
@@ -1234,9 +2298,12 @@
                     Upload your document
                 </div>
 
+
                 <div class="section-text">
+
                     Add a PDF or DOCX file and let the AI
                     answer questions using its contents.
+
                 </div>
 
 
@@ -1249,9 +2316,11 @@
                         ↑
                     </div>
 
+
                     <div class="drop-title">
                         Drop your file here
                     </div>
+
 
                     <div class="drop-subtitle">
                         Click to browse · PDF or DOCX
@@ -1268,7 +2337,7 @@
                 </div>
 
 
-                <!-- FILE -->
+                <!-- SELECTED FILE -->
 
                 <div
                     class="file-card"
@@ -1279,6 +2348,7 @@
                         📄
                     </div>
 
+
                     <div class="file-info">
 
                         <div
@@ -1287,6 +2357,7 @@
                         >
                             document.pdf
                         </div>
+
 
                         <div
                             class="file-type"
@@ -1297,9 +2368,12 @@
 
                     </div>
 
+
                     <button
                         class="remove-file"
                         id="remove-file"
+                        type="button"
+                        title="Remove file"
                     >
                         ×
                     </button>
@@ -1310,6 +2384,7 @@
                 <button
                     class="upload-button"
                     id="upload-btn"
+                    type="button"
                     disabled
                 >
                     Upload & Process
@@ -1318,7 +2393,7 @@
             </section>
 
 
-            <!-- DOCUMENT -->
+            <!-- DOCUMENT STATUS -->
 
             <section class="card document-card">
 
@@ -1327,6 +2402,7 @@
                     <div class="section-heading">
                         Current document
                     </div>
+
 
                     <div
                         class="badge"
@@ -1347,6 +2423,7 @@
 
 
                 <div class="stats">
+
 
                     <div class="stat">
 
@@ -1379,6 +2456,7 @@
 
                     </div>
 
+
                 </div>
 
             </section>
@@ -1386,7 +2464,9 @@
         </aside>
 
 
-        <!-- ================= CHAT ================= -->
+        <!-- =================================================
+             CHAT
+        ================================================== -->
 
         <section class="card chat-panel">
 
@@ -1401,11 +2481,13 @@
                         ✦
                     </div>
 
+
                     <div>
 
                         <div class="chat-title">
                             Document Q&A
                         </div>
+
 
                         <div class="chat-description">
                             Answers grounded in your uploaded document
@@ -1419,6 +2501,7 @@
                 <button
                     class="clear-chat"
                     id="clear-chat"
+                    type="button"
                 >
                     Clear chat
                 </button>
@@ -1426,7 +2509,7 @@
             </div>
 
 
-            <!-- CHAT -->
+            <!-- CHAT BOX -->
 
             <div
                 class="chat-box"
@@ -1447,28 +2530,44 @@
                             💬
                         </div>
 
+
                         <div class="empty-title">
                             Ask your document anything
                         </div>
 
+
                         <div class="empty-description">
-                            Upload a document and start asking questions.
-                            DocuChat retrieves relevant information from
-                            your document before generating an answer.
+
+                            Upload a document and start asking
+                            questions. DocuChat retrieves relevant
+                            information from your document before
+                            generating an answer.
+
                         </div>
 
 
                         <div class="suggestions">
 
-                            <button class="suggestion">
+                            <button
+                                class="suggestion"
+                                type="button"
+                            >
                                 Summarize this document
                             </button>
 
-                            <button class="suggestion">
+
+                            <button
+                                class="suggestion"
+                                type="button"
+                            >
                                 What are the key points?
                             </button>
 
-                            <button class="suggestion">
+
+                            <button
+                                class="suggestion"
+                                type="button"
+                            >
                                 Explain the main topic
                             </button>
 
@@ -1479,7 +2578,7 @@
                 </div>
 
 
-                <!-- TYPING -->
+                <!-- TYPING INDICATOR -->
 
                 <div
                     class="message bot typing"
@@ -1513,15 +2612,19 @@
                         disabled
                     >
 
+
                     <button
                         id="send-btn"
                         class="send-button"
+                        type="button"
                         disabled
+                        title="Send"
                     >
                         ↑
                     </button>
 
                 </div>
+
 
                 <div class="input-hint">
                     Press Enter to send
@@ -1538,16 +2641,17 @@
 
 <script>
 
-    /* =========================================
-       API
-    ========================================= */
+    /* =========================================================
+       API CONFIGURATION
+    ========================================================= */
 
-    const API_BASE = "";
+    const API_BASE =
+        "http://127.0.0.1:8000";
 
 
-    /* =========================================
-       ELEMENTS
-    ========================================= */
+    /* =========================================================
+       DOM ELEMENTS
+    ========================================================= */
 
     const fileInput =
         document.getElementById("file-input");
@@ -1601,25 +2705,37 @@
         document.getElementById("clear-chat");
 
 
+    /* =========================================================
+       STATE
+    ========================================================= */
+
     let selectedFile = null;
+
     let documentReady = false;
 
 
-    /* =========================================
+    /* =========================================================
        FILE SELECTION
-    ========================================= */
+    ========================================================= */
 
     dropZone.addEventListener(
         "click",
-        () => fileInput.click()
+        function () {
+
+            fileInput.click();
+
+        }
     );
 
 
     fileInput.addEventListener(
         "change",
-        () => {
+        function () {
 
-            if (fileInput.files.length > 0) {
+            if (
+                fileInput.files &&
+                fileInput.files.length > 0
+            ) {
 
                 selectFile(
                     fileInput.files[0]
@@ -1641,8 +2757,8 @@
 
 
         if (
-            !["pdf", "docx"]
-                .includes(extension)
+            extension !== "pdf" &&
+            extension !== "docx"
         ) {
 
             alert(
@@ -1671,60 +2787,86 @@
         );
 
 
-        uploadBtn.disabled = false;
+        uploadBtn.disabled =
+            false;
 
     }
 
 
     function formatFileSize(bytes) {
 
-        if (bytes < 1024)
-            return bytes + " B";
+        if (bytes < 1024) {
 
-        if (bytes < 1024 * 1024)
             return (
-                bytes / 1024
-            ).toFixed(1) + " KB";
+                bytes +
+                " B"
+            );
+
+        }
+
+
+        if (
+            bytes <
+            1024 * 1024
+        ) {
+
+            return (
+                (bytes / 1024)
+                    .toFixed(1) +
+                " KB"
+            );
+
+        }
+
 
         return (
-            bytes / (1024 * 1024)
-        ).toFixed(1) + " MB";
+            (bytes / (1024 * 1024))
+                .toFixed(1) +
+            " MB"
+        );
+
     }
 
 
-    /* =========================================
+    /* =========================================================
        REMOVE FILE
-    ========================================= */
+    ========================================================= */
 
     removeFileBtn.addEventListener(
         "click",
-        (event) => {
+        function (event) {
 
             event.stopPropagation();
 
+
             selectedFile = null;
 
+
             fileInput.value = "";
+
 
             fileCard.classList.remove(
                 "visible"
             );
 
-            uploadBtn.disabled = true;
+
+            uploadBtn.disabled =
+                true;
 
         }
     );
 
 
-    /* =========================================
+    /* =========================================================
        DRAG & DROP
-    ========================================= */
+    ========================================================= */
 
     dropZone.addEventListener(
         "dragover",
-        (event) => {
+        function (event) {
 
             event.preventDefault();
+
 
             dropZone.classList.add(
                 "dragover"
@@ -1736,7 +2878,7 @@
 
     dropZone.addEventListener(
         "dragleave",
-        () => {
+        function () {
 
             dropZone.classList.remove(
                 "dragover"
@@ -1748,9 +2890,10 @@
 
     dropZone.addEventListener(
         "drop",
-        (event) => {
+        function (event) {
 
             event.preventDefault();
+
 
             dropZone.classList.remove(
                 "dragover"
@@ -1771,9 +2914,9 @@
     );
 
 
-    /* =========================================
-       UPLOAD
-    ========================================= */
+    /* =========================================================
+       UPLOAD DOCUMENT
+    ========================================================= */
 
     uploadBtn.addEventListener(
         "click",
@@ -1783,11 +2926,15 @@
 
     async function uploadDocument() {
 
-        if (!selectedFile)
+        if (!selectedFile) {
+
             return;
+        }
 
 
-        uploadBtn.disabled = true;
+        uploadBtn.disabled =
+            true;
+
 
         uploadBtn.innerHTML =
             '<span class="spinner"></span> Processing...';
@@ -1795,6 +2942,7 @@
 
         const formData =
             new FormData();
+
 
         formData.append(
             "file",
@@ -1809,7 +2957,9 @@
                     `${API_BASE}/upload`,
                     {
                         method: "POST",
-                        body: formData
+
+                        body:
+                            formData
                     }
                 );
 
@@ -1828,19 +2978,27 @@
             }
 
 
-            documentReady = true;
+            /* -----------------------------------------
+               DOCUMENT READY
+            ----------------------------------------- */
+
+            documentReady =
+                true;
 
 
             documentName.textContent =
-                data.filename;
+                data.filename ||
+                selectedFile.name;
 
 
             pageCount.textContent =
-                data.num_pages ?? "—";
+                data.num_pages ??
+                "—";
 
 
             chunkCount.textContent =
-                data.num_chunks ?? "—";
+                data.num_chunks ??
+                "—";
 
 
             statusBadge.classList.add(
@@ -1852,9 +3010,12 @@
                 "● Ready";
 
 
-            queryInput.disabled = false;
+            queryInput.disabled =
+                false;
 
-            sendBtn.disabled = false;
+
+            sendBtn.disabled =
+                false;
 
 
             queryInput.placeholder =
@@ -1869,16 +3030,23 @@
             );
 
 
-        } catch (error) {
+            queryInput.focus();
+
+
+        }
+        catch (error) {
 
             alert(
                 error.message ||
                 "Upload failed. Is the backend running?"
             );
 
-        } finally {
+        }
+        finally {
 
-            uploadBtn.disabled = false;
+            uploadBtn.disabled =
+                false;
+
 
             uploadBtn.textContent =
                 "Upload & Process";
@@ -1888,9 +3056,9 @@
     }
 
 
-    /* =========================================
-       MESSAGE
-    ========================================= */
+    /* =========================================================
+       ADD MESSAGE
+    ========================================================= */
 
     function addMessage(
         text,
@@ -1903,24 +3071,34 @@
 
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         message.className =
             `message ${sender}`;
 
 
         const content =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         content.className =
             "message-content";
 
 
         const label =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         label.className =
             "message-label";
+
 
         label.textContent =
             sender === "user"
@@ -1929,47 +3107,104 @@
 
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         bubble.className =
             "bubble";
 
-        bubble.textContent =
-            text;
+
+        /* -----------------------------------------
+           USER MESSAGE
+        ----------------------------------------- */
+
+        if (
+            sender === "user"
+        ) {
+
+            bubble.textContent =
+                text;
+
+        }
 
 
-        content.appendChild(label);
+        /* -----------------------------------------
+           BOT MESSAGE
+        ----------------------------------------- */
 
-        content.appendChild(bubble);
+        else {
+
+            const response =
+                document.createElement(
+                    "div"
+                );
 
 
-        /* SOURCES */
+            response.className =
+                "ai-response";
+
+
+            response.innerHTML =
+                renderMarkdown(
+                    text
+                );
+
+
+            bubble.appendChild(
+                response
+            );
+
+        }
+
+
+        content.appendChild(
+            label
+        );
+
+
+        content.appendChild(
+            bubble
+        );
+
+
+        /* -----------------------------------------
+           SOURCES
+        ----------------------------------------- */
 
         if (
             sender === "bot" &&
-            sources &&
+            Array.isArray(sources) &&
             sources.length > 0
         ) {
 
             const sourcesContainer =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             sourcesContainer.className =
                 "sources";
 
 
-            const label =
-                document.createElement("span");
+            const sourceLabel =
+                document.createElement(
+                    "span"
+                );
 
-            label.className =
+
+            sourceLabel.className =
                 "sources-label";
 
-            label.textContent =
+
+            sourceLabel.textContent =
                 "Sources:";
 
 
             sourcesContainer.appendChild(
-                label
+                sourceLabel
             );
 
 
@@ -1982,25 +3217,29 @@
                         )
                         .filter(
                             page =>
-                                page !== undefined
+                                page !== undefined &&
+                                page !== null
                         )
                 )
             ];
 
 
             pages.forEach(
-                page => {
+                function (page) {
 
                     const chip =
                         document.createElement(
                             "span"
                         );
 
+
                     chip.className =
                         "source-chip";
 
+
                     chip.textContent =
                         `Page ${page}`;
+
 
                     sourcesContainer.appendChild(
                         chip
@@ -2033,9 +3272,9 @@
     }
 
 
-    /* =========================================
+    /* =========================================================
        SYSTEM MESSAGE
-    ========================================= */
+    ========================================================= */
 
     function addSystemMessage(text) {
 
@@ -2044,24 +3283,34 @@
 
 
         const message =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         message.className =
             "message bot";
 
 
         const content =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         content.className =
             "message-content";
 
 
         const bubble =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         bubble.className =
             "bubble";
+
 
         bubble.textContent =
             text;
@@ -2070,6 +3319,7 @@
         content.appendChild(
             bubble
         );
+
 
         message.appendChild(
             content
@@ -2087,9 +3337,617 @@
     }
 
 
-    /* =========================================
+    /* =========================================================
+       MARKDOWN RENDERER
+    ========================================================= */
+
+    function renderMarkdown(markdown) {
+
+        if (!markdown) {
+
+            return "";
+
+        }
+
+
+        /*
+         * Convert value to string in case
+         * backend returns something unexpected.
+         */
+
+        markdown =
+            String(markdown);
+
+
+        /* -----------------------------------------
+           Escape HTML
+        ----------------------------------------- */
+
+        let text =
+            markdown
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                );
+
+
+        /* -----------------------------------------
+           CODE BLOCKS
+        ----------------------------------------- */
+
+        const codeBlocks = [];
+
+
+        text =
+            text.replace(
+                /```(?:\w+)?\s*([\s\S]*?)```/g,
+                function (
+                    match,
+                    code
+                ) {
+
+                    const index =
+                        codeBlocks.length;
+
+
+                    codeBlocks.push(
+                        `<pre><code>${code.trim()}</code></pre>`
+                    );
+
+
+                    return (
+                        `@@CODEBLOCK_${index}@@`
+                    );
+
+                }
+            );
+
+
+        /* -----------------------------------------
+           MARKDOWN TABLES
+        ----------------------------------------- */
+
+        const lines =
+            text.split("\n");
+
+
+        const output = [];
+
+
+        let i = 0;
+
+
+        while (
+            i < lines.length
+        ) {
+
+            const current =
+                lines[i].trim();
+
+
+            const next =
+                i + 1 <
+                lines.length
+                    ? lines[i + 1].trim()
+                    : "";
+
+
+            const isTable =
+                current.includes("|") &&
+                next.includes("|") &&
+                isTableSeparator(
+                    next
+                );
+
+
+            if (isTable) {
+
+                const headers =
+                    splitTableRow(
+                        current
+                    );
+
+
+                i += 2;
+
+
+                const rows = [];
+
+
+                while (
+                    i < lines.length
+                ) {
+
+                    const row =
+                        lines[i].trim();
+
+
+                    if (
+                        !row ||
+                        !row.includes("|")
+                    ) {
+
+                        break;
+
+                    }
+
+
+                    rows.push(
+                        splitTableRow(
+                            row
+                        )
+                    );
+
+
+                    i++;
+
+                }
+
+
+                let table =
+                    '<div class="ai-table-wrapper">' +
+                    '<table>' +
+                    '<thead>' +
+                    '<tr>';
+
+
+                headers.forEach(
+                    function (header) {
+
+                        table +=
+                            `<th>${formatInline(header)}</th>`;
+
+                    }
+                );
+
+
+                table +=
+                    "</tr>" +
+                    "</thead>" +
+                    "<tbody>";
+
+
+                rows.forEach(
+                    function (row) {
+
+                        table +=
+                            "<tr>";
+
+
+                        for (
+                            let column = 0;
+                            column < headers.length;
+                            column++
+                        ) {
+
+                            const value =
+                                row[column] ||
+                                "";
+
+
+                            table +=
+                                `<td>${formatInline(value)}</td>`;
+
+                        }
+
+
+                        table +=
+                            "</tr>";
+
+                    }
+                );
+
+
+                table +=
+                    "</tbody>" +
+                    "</table>" +
+                    "</div>";
+
+
+                output.push(
+                    table
+                );
+
+
+                continue;
+
+            }
+
+
+            output.push(
+                lines[i]
+            );
+
+
+            i++;
+
+        }
+
+
+        text =
+            output.join("\n");
+
+
+        /* -----------------------------------------
+           HEADINGS
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /^###\s+(.+)$/gm,
+                "<h3>$1</h3>"
+            );
+
+
+        text =
+            text.replace(
+                /^##\s+(.+)$/gm,
+                "<h2>$1</h2>"
+            );
+
+
+        text =
+            text.replace(
+                /^#\s+(.+)$/gm,
+                "<h1>$1</h1>"
+            );
+
+
+        /* -----------------------------------------
+           HORIZONTAL RULE
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /^\s*(\*\*\*|---+|___+)\s*$/gm,
+                "<hr>"
+            );
+
+
+        /* -----------------------------------------
+           BOLD
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /\*\*(.+?)\*\*/g,
+                "<strong>$1</strong>"
+            );
+
+
+        /* -----------------------------------------
+           ITALIC
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /(?<!\*)\*([^*\n]+)\*(?!\*)/g,
+                "<em>$1</em>"
+            );
+
+
+        /* -----------------------------------------
+           INLINE CODE
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /`([^`\n]+)`/g,
+                "<code>$1</code>"
+            );
+
+
+        /* -----------------------------------------
+           SOURCE REFERENCES
+        ----------------------------------------- */
+
+        text =
+            text.replace(
+                /\[Page\s+(\d+)\]/gi,
+                '<span class="inline-source">Page $1</span>'
+            );
+
+
+        /* -----------------------------------------
+           BULLET LISTS
+        ----------------------------------------- */
+
+        const bulletRegex =
+            /(?:^|\n)((?:[ \t]*[-*+][ \t]+.+(?:\n|$))+)/g;
+
+
+        text =
+            text.replace(
+                bulletRegex,
+                function (
+                    match,
+                    list
+                ) {
+
+                    const items =
+                        list
+                            .split("\n")
+                            .map(
+                                function (line) {
+
+                                    return line
+                                        .replace(
+                                            /^[ \t]*[-*+][ \t]+/,
+                                            ""
+                                        )
+                                        .trim();
+
+                                }
+                            )
+                            .filter(Boolean);
+
+
+                    if (
+                        items.length === 0
+                    ) {
+
+                        return match;
+
+                    }
+
+
+                    return (
+                        "\n<ul>" +
+                        items
+                            .map(
+                                function (item) {
+
+                                    return (
+                                        `<li>${formatInline(item)}</li>`
+                                    );
+
+                                }
+                            )
+                            .join("") +
+                        "</ul>\n"
+                    );
+
+                }
+            );
+
+
+        /* -----------------------------------------
+           NUMBERED LISTS
+        ----------------------------------------- */
+
+        const numberedRegex =
+            /(?:^|\n)((?:[ \t]*\d+\.[ \t]+.+(?:\n|$))+)/g;
+
+
+        text =
+            text.replace(
+                numberedRegex,
+                function (
+                    match,
+                    list
+                ) {
+
+                    const items =
+                        list
+                            .split("\n")
+                            .map(
+                                function (line) {
+
+                                    return line
+                                        .replace(
+                                            /^[ \t]*\d+\.[ \t]+/,
+                                            ""
+                                        )
+                                        .trim();
+
+                                }
+                            )
+                            .filter(Boolean);
+
+
+                    if (
+                        items.length === 0
+                    ) {
+
+                        return match;
+
+                    }
+
+
+                    return (
+                        "\n<ol>" +
+                        items
+                            .map(
+                                function (item) {
+
+                                    return (
+                                        `<li>${formatInline(item)}</li>`
+                                    );
+
+                                }
+                            )
+                            .join("") +
+                        "</ol>\n"
+                    );
+
+                }
+            );
+
+
+        /* -----------------------------------------
+           LINE BREAKS → PARAGRAPHS
+        ----------------------------------------- */
+
+        const blocks =
+            text
+                .split(/\n{2,}/)
+                .map(
+                    block =>
+                        block.trim()
+                )
+                .filter(Boolean);
+
+
+        let html = "";
+
+
+        blocks.forEach(
+            function (block) {
+
+                if (
+                    block.startsWith("<h1>") ||
+                    block.startsWith("<h2>") ||
+                    block.startsWith("<h3>") ||
+                    block.startsWith("<ul>") ||
+                    block.startsWith("<ol>") ||
+                    block.startsWith("<hr>") ||
+                    block.startsWith("<div class=\"ai-table-wrapper\">") ||
+                    block.startsWith("<pre>")
+                ) {
+
+                    html += block;
+
+                }
+                else {
+
+                    html +=
+                        `<p>${block.replace(/\n/g, "<br>")}</p>`;
+
+                }
+
+            }
+        );
+
+
+        /* -----------------------------------------
+           RESTORE CODE BLOCKS
+        ----------------------------------------- */
+
+        codeBlocks.forEach(
+            function (
+                block,
+                index
+            ) {
+
+                html =
+                    html.replace(
+                        `@@CODEBLOCK_${index}@@`,
+                        block
+                    );
+
+            }
+        );
+
+
+        return html;
+
+    }
+
+
+    /* =========================================================
+       TABLE HELPERS
+    ========================================================= */
+
+    function isTableSeparator(line) {
+
+        const cleaned =
+            line
+                .trim()
+                .replace(
+                    /^\|/,
+                    ""
+                )
+                .replace(
+                    /\|$/,
+                    ""
+                );
+
+
+        const cells =
+            cleaned.split("|");
+
+
+        if (
+            cells.length < 2
+        ) {
+
+            return false;
+
+        }
+
+
+        return cells.every(
+            function (cell) {
+
+                return /^:?-{3,}:?$/
+                    .test(
+                        cell.trim()
+                    );
+
+            }
+        );
+
+    }
+
+
+    function splitTableRow(row) {
+
+        return row
+            .trim()
+            .replace(
+                /^\|/,
+                ""
+            )
+            .replace(
+                /\|$/,
+                ""
+            )
+            .split("|")
+            .map(
+                function (cell) {
+
+                    return cell.trim();
+
+                }
+            );
+
+    }
+
+
+    /* =========================================================
+       INLINE MARKDOWN
+    ========================================================= */
+
+    function formatInline(text) {
+
+        return text
+            .replace(
+                /\*\*(.+?)\*\*/g,
+                "<strong>$1</strong>"
+            )
+            .replace(
+                /`([^`\n]+)`/g,
+                "<code>$1</code>"
+            )
+            .replace(
+                /\[Page\s+(\d+)\]/gi,
+                '<span class="inline-source">Page $1</span>'
+            );
+
+    }
+
+
+    /* =========================================================
        SEND QUERY
-    ========================================= */
+    ========================================================= */
 
     sendBtn.addEventListener(
         "click",
@@ -2099,7 +3957,7 @@
 
     queryInput.addEventListener(
         "keydown",
-        event => {
+        function (event) {
 
             if (
                 event.key === "Enter" &&
@@ -2126,9 +3984,15 @@
             !query ||
             !documentReady
         ) {
+
             return;
+
         }
 
+
+        /* -----------------------------------------
+           USER MESSAGE
+        ----------------------------------------- */
 
         addMessage(
             query,
@@ -2136,11 +4000,17 @@
         );
 
 
-        queryInput.value = "";
+        queryInput.value =
+            "";
 
-        sendBtn.disabled = true;
 
-        queryInput.disabled = true;
+        sendBtn.disabled =
+            true;
+
+
+        queryInput.disabled =
+            true;
+
 
         typing.classList.add(
             "visible"
@@ -2156,16 +4026,19 @@
                 await fetch(
                     `${API_BASE}/chat`,
                     {
-                        method: "POST",
+                        method:
+                            "POST",
 
                         headers: {
                             "Content-Type":
                                 "application/json"
                         },
 
-                        body: JSON.stringify({
-                            query: query
-                        })
+                        body:
+                            JSON.stringify({
+                                query:
+                                    query
+                            })
                     }
                 );
 
@@ -2193,11 +4066,12 @@
                 data.answer ||
                 "I couldn't generate an answer.",
                 "bot",
-                data.sources || []
+                data.sources ||
+                []
             );
 
-
-        } catch (error) {
+        }
+        catch (error) {
 
             typing.classList.remove(
                 "visible"
@@ -2210,11 +4084,16 @@
                 "bot"
             );
 
-        } finally {
+        }
+        finally {
 
-            sendBtn.disabled = false;
+            sendBtn.disabled =
+                false;
 
-            queryInput.disabled = false;
+
+            queryInput.disabled =
+                false;
+
 
             queryInput.focus();
 
@@ -2223,9 +4102,9 @@
     }
 
 
-    /* =========================================
+    /* =========================================================
        CLEAR CHAT
-    ========================================= */
+    ========================================================= */
 
     clearChatBtn.addEventListener(
         "click",
@@ -2242,7 +4121,11 @@
 
 
         messages.forEach(
-            message => message.remove()
+            function (message) {
+
+                message.remove();
+
+            }
         );
 
 
@@ -2261,55 +4144,63 @@
     }
 
 
-    /* =========================================
+    /* =========================================================
        SUGGESTIONS
-    ========================================= */
+    ========================================================= */
 
     document
         .querySelectorAll(".suggestion")
-        .forEach(button => {
+        .forEach(
+            function (button) {
 
-            button.addEventListener(
-                "click",
-                () => {
+                button.addEventListener(
+                    "click",
+                    function () {
 
-                    if (!documentReady) {
+                        if (!documentReady) {
 
-                        alert(
-                            "Upload a document first."
-                        );
+                            alert(
+                                "Upload a document first."
+                            );
 
-                        return;
+                            return;
+
+                        }
+
+
+                        queryInput.value =
+                            button.textContent.trim();
+
+
+                        queryInput.focus();
+
                     }
+                );
+
+            }
+        );
 
 
-                    queryInput.value =
-                        button.textContent.trim();
-
-                    queryInput.focus();
-
-                }
-            );
-
-        });
-
-
-    /* =========================================
-       SCROLL
-    ========================================= */
+    /* =========================================================
+       SCROLL TO BOTTOM
+    ========================================================= */
 
     function scrollToBottom() {
 
-        requestAnimationFrame(() => {
+        requestAnimationFrame(
+            function () {
 
-            chatBox.scrollTop =
-                chatBox.scrollHeight;
+                chatBox.scrollTop =
+                    chatBox.scrollHeight;
 
-        });
+            }
+        );
 
     }
 
 </script>
 
+
 </body>
+
 </html>
