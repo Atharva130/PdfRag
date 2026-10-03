@@ -1,3 +1,4 @@
+import threading
 import chromadb
 from sentence_transformers import SentenceTransformer
 
@@ -6,6 +7,10 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 COLLECTION_NAME = "current_document"
+
+# Serializes embedding-heavy operations so concurrent uploads/queries
+# don't stack two full embedding passes in memory at once (prevents OOM crashes)
+embedding_lock = threading.Lock()
 
 
 def get_collection():
@@ -27,17 +32,18 @@ def store_chunks(chunks):
     chunks: list of {"chunk_id": int, "page": int, "text": str}
     Embeds each chunk and stores it in Chroma.
     """
-    collection = reset_collection()
+    with embedding_lock:
+        collection = reset_collection()
 
-    texts = [c["text"] for c in chunks]
-    embeddings = embedding_model.encode(texts).tolist()
+        texts = [c["text"] for c in chunks]
+        embeddings = embedding_model.encode(texts).tolist()
 
-    collection.add(
-        ids=[str(c["chunk_id"]) for c in chunks],
-        embeddings=embeddings,
-        documents=texts,
-        metadatas=[{"page": c["page"]} for c in chunks],
-    )
+        collection.add(
+            ids=[str(c["chunk_id"]) for c in chunks],
+            embeddings=embeddings,
+            documents=texts,
+            metadatas=[{"page": c["page"]} for c in chunks],
+        )
     return len(chunks)
 
 
@@ -46,19 +52,20 @@ def query_chunks(query: str, n_results: int = 5):
     Embeds the query and retrieves the most similar stored chunks.
     Returns list of {"text": str, "page": int, "distance": float}
     """
-    collection = get_collection()
-    query_embedding = embedding_model.encode([query]).tolist()
+    with embedding_lock:
+        collection = get_collection()
+        query_embedding = embedding_model.encode([query]).tolist()
 
-    results = collection.query(
-        query_embeddings=query_embedding,
-        n_results=n_results,
-    )
+        results = collection.query(
+            query_embeddings=query_embedding,
+            n_results=n_results,
+        )
 
-    retrieved = []
-    for text, meta, dist in zip(
-        results["documents"][0], #type:ignore
-        results["metadatas"][0], #type:ignore
-        results["distances"][0], #type:ignore
-    ):
-        retrieved.append({"text": text, "page": meta["page"], "distance": dist})
+        retrieved = []
+        for text, meta, dist in zip(
+            results["documents"][0],
+            results["metadatas"][0],
+            results["distances"][0],
+        ):
+            retrieved.append({"text": text, "page": meta["page"], "distance": dist})
     return retrieved
