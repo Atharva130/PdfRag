@@ -1851,8 +1851,12 @@
                 );
 
 
-            const data =
-                await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error("Server didn't respond properly. It may have restarted — please try again in a moment.");
+            }
 
 
             if (!response.ok) {
@@ -2216,8 +2220,12 @@
                 );
 
 
-            const data =
-                await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error("Server didn't respond properly. It may have restarted — please try again in a moment.");
+            }
 
 
             if (!response.ok) {
